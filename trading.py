@@ -38,15 +38,16 @@ class TradinEnv(gym.Env):
         self.pending_orders = []  # Store multiple pending orders
         self.execution_delay = 1 # To avoid the agent opening biased trade that look at the past 
         self.RR = 2
-        self.reward = self.balance #TBR if you don't use hte approach based on cumulative balance 
+        self.reward = self.balance  
 
-        # Define action space: 3 possible actions (0 = Hold, 1 = Buy, 2 = Sell) and 5 possible RR (0 to 5)
+        # Define action space: 3 possible actions (0 = Hold, 1 = Buy, 2 = Sell) and "[...]"
         self.action_space = spaces.Discrete(3)
+        "[...]"
 
         # Define the observation space: all columns of the dataset
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(len(df.columns),), dtype=np.float32
-        ) # Should be changed to incorporate the RR ?  
+        )   
 
     def reset(self): 
         """
@@ -150,7 +151,7 @@ class TradinEnv(gym.Env):
         low (float): Current low price.
         """
         executed_orders = []
-        #reward = 0  # TBR as this variable is already defined at the beginning
+        #reward = 0
 
         for order in self.pending_orders:
             # Buy orders loop  
@@ -160,13 +161,13 @@ class TradinEnv(gym.Env):
                     executed_orders.append(order)
                     self.balance +=  (self.balance*( (order["take_profit"] - order["entry_price"])/order["entry_price"] ) )
                     self.reward = "[...]"
-                    print(f"Executed order : {executed_orders} \n")  
+                    print(f"Executed order : {executed_orders} \n") # For evaluation of the environment 
                 # Stop loss trigger (loss)
                 elif low <= order["stop_loss"] and abs(order["step_placed"] - self.current_step) >= self.execution_delay:
                     executed_orders.append(order)
                     self.balance += (self.balance*( (order["stop_loss"] - order["entry_price"])/order["entry_price"] ) )
                     self.reward = "[...]"
-                    print(f"Executed order : {executed_orders} \n")
+                    print(f"Executed order : {executed_orders} \n") # For evaluation of the environment
 
             # Sell order
             if order["type"] == "sell":
@@ -175,13 +176,13 @@ class TradinEnv(gym.Env):
                     executed_orders.append(order)
                     self.balance +=  ( self.balance* ( (order["entry_price"] - order["take_profit"])/order["take_profit"] ) )
                     self.reward =  "[...]"
-                    print(f"Executed order : {executed_orders} \n")#TBR   
+                    print(f"Executed order : {executed_orders} \n") # For evaluation of the environment  
                 # Stop loss trigger (loss)
                 elif high >= order["stop_loss"] and abs(order["step_placed"] - self.current_step) >= self.execution_delay:
                     executed_orders.append(order)
                     self.balance += (self.balance*( (order["entry_price"] - order["stop_loss"])/order["stop_loss"] ) )
                     self.reward = "[...]"
-                    print(f"Executed order : {executed_orders} \n")#TBR 
+                    print(f"Executed order : {executed_orders} \n") # For evaluation of the environment
         print(f"Reward: {self.reward}") #TBR
                     
         # Remove executed orders from the list
