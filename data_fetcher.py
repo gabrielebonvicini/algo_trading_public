@@ -309,7 +309,6 @@ class DataFetcher:
 
             
     
-
 # Example usage
 if __name__ == "__main__": # __name__ == "__main__" esnures that this block is just run here 
     #(it does not run when I import the module in other .py files)

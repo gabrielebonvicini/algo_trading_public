@@ -23,8 +23,8 @@ from utils import train_test_split
 
 #Steps: 
  #Binance > API management > Algo_project
-API_key = "D2e3mW7aVMG1PnhhuVHayY9YqvVcr7JrKgBj3vrUQvNk6Fzb09Sb73eJ6YK53o3k"
-API_secret = "I4ou2Q5R3H8Ypydlm3MTjjOe5zhCZK0pcGHl6hZn0eDpGsbyLkpclwXHEqoztkzL"
+API_key = "[...]"
+API_secret = "[...]"
 
 #Activate the client 
 client = Client(API_key,API_secret)
@@ -38,7 +38,7 @@ client = Client(API_key,API_secret)
 symbol = "BTCUSDT"
 
 # Interval = "1DAY" #Fetch 15 minute data
-start_date =  "15 Jan, 2025"
+start_date =  "15 Jan, 2022"
 end_date = "16 Feb, 2025"
 
 DataFetcher_BTC = DataFetcher(client, symbol)
@@ -55,7 +55,7 @@ df = DataFetcher_BTC.fetch_data(interval = "1MIN", start_date = start_date, end_
 df_train, df_test = train_test_split(df, test_size = 0.3)
 
 # Create the environment for training and test 
-training_env = TradinEnv(df_train) # This will simulate trading so that the AI can practice
+training_env = TradinEnv(df_train) 
 test_env = TradinEnv(df_test)
 
 # Create the model 
