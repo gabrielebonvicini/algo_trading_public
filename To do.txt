@@ -1,0 +1,133 @@
+--------------------- Backup -----------------------------------------------------
+
+15. debugging --  DONE 
+I want to visualize what this code is doing. -- DONE 
+Add more debugging within the code -- DONE  
+also the pending orders they stay  for a maximum of one position. NOt more (This is not relevant as it is not clear 
+how the action is created) -- DONE 
+
+16. Important
+At the current state the model just consider the current observation -- DONE 
+i want a code that store the pending orders in a vector with pending orders -- DONE
+i want to check which orders are exectured, THe id OF the order could be the step executed -- DONE  
+I ahve to check all of the prices to which a given order is executed or sold -- DONE 
+Fix mistake in position. It gives me position = None but then place an order -- moved to 17 DONE
+
+
+2. - DONE 
+Understand what to assign to the class. So far, everything is assigned to the class, but it does not 
+make sense --- DONE 
+
+
+ 20 Open critical points -- DONE 
+the first iteration is wrong cause the price of the previous low or high is Na -- DONE
+the balance does not change -- DONE
+the take profit is wrong (is equal to the entry price ) -- DONE
+
+
+4. Important - DONE 
+There is something wrong in the plot of the VWAP. It's important cause the plot reflect the caluclation of hte VWAP and I need
+them to be correct - DONE 
+The difference is due to the Time zone. What I can do is to decide a priori which time zone to use and be consistent. so far is hte 
+UTC + 0, and I would keep it like this for simplicity
+
+
+5. Data vis -- DONE 
+Consider to create a data visualization tab witht the functions to perform data visualization, AND remove plot_VWAP from the data_fetcher class
+
+6. Strategy Check -- DONE 
+- The function should open a trade if the signal is True -- DONE 
+- The function should sell only if successive prices touch the take profit or stop loss -- DONE 
+- Fix the target RR. It should be Target price = Target RR (enter price - Stop loss). Indeeed, now it is simply Close * Target RR.
+I think that so far the functio nassumes that one enters at close price. This hsould be also fixed -- DONE  
+
+8. strategy understnad andf fix -- DONE
+- I ahve to understand the P&L and how the trail P&L is computed - DONE
+- SOmetimes the stop is too narrow. Why ? -- DONE 
+- same cases need debugging (refer to the section in the memorandum)
+- The plot now plots the target price. I want to make sure that is an error only of the plot (the target price is reached not always, in 
+somecases the trade is closed before) -DONE 
+
+10. class Trading env -- DONE 
+- line 266 and 276 assumes that only close price can be considered the current price. THis should be chagned to 
+ any price. Indeed it can be for a opening price above the take profit that I close the trade -- I won't change that as this class is 
+ only a first example 
+
+14.  Comparison -- DONE 
+Confront the old code and the new one. Do it by giving a different name to the new class -- DONE 
+ 
+17 Error in position -- DONE 
+Posiiton printed in render function is wrong -- Position printed in the render is simply a wrong view. I called it Position (t-1)
+which is the position prior to processing the order, and added a posiiton (t+1) after processing the order  -- DONE 
+
+
+24 Reward -- -DONE 
+The reward function has been added quiclòy --> Check it again
+
+25 reward function improvement -- DONE 
+- Consider to improve it a bit.
+- It looks a bit weird now all of the results shown 
+- Give a reward also for hodling (and not only for profit and loss)
+- generally the reward function (as per Open AI gym) is implemented in the step() fucntion. Make sure 
+that (since mine is updated in the nextobservation function ) that it is always updated with the current step -- DONE (timing seems to be cofrrect)
+
+------------------- To do ------------------------------------ 
+
+1. 
+So far, I am connecting to API which has restrictions, adn therefore will have problems in trading.
+Once I have a strategy that works, I have to change that 
+
+
+3. Plots 
+plot_VWAP does not work for some dates.
+Try to run the function individually. For example 24 to 26th. 
+Update: The problem seems to be solved by putting them in different cells, but I still would address this  
+
+
+7. Other approach consideration 
+Consider take profitConsider to use different take profits, for example a take profit computed on Traget RR and ATR, so that it consider 
+the volatiliy
+
+
+9. Organization 
+Consider moving all of the indicators (VWAP, ATR ecc) in the utils tab or in a specific tab for indicator if in the future become messy.
+So far they are in the datafetcher but it is pointless
+
+11. Environment -- Done Addressed in 13
+- Change the system of rewareds in the trading Env (it should be able to maximize the RR)
+
+12. Training (main.py)
+- What is a a multi layer preceptron + document it in the memo 
+- line 76: Why this is done in this tab and not in the environment directly ? 
+- What is line 78 to 83 doing  ? refer to ChatGPT chat named "TB used later"
+
+13. Improvement needed 
+- Better reward function: Reward should be based on actual profit % rather than a simple +1/-1.
+- More features in observation space: Add more indicators to give the model better insights.
+- Consider trading fees/slippage: This will make the strategy more realistic.
+- More advanced action space: Instead of just Buy/Sell/Hold, you could add position sizing (e.g., buy 50%, sell 75%, etc.).
+- Longer training time: PPO requires a lot of training data to generalize well.
+
+18 Trading Env 
+ Substitute the new trading environment with the old one
+
+ 19 stop loss and take profit 
+ The take profit should be chosen in function of the target RR 
+ THe optimal RR should be subject to decision from the agent
+
+20 #TBR
+at the end remove all of the #TBR
+
+21 Wrong RR 
+"take_profit": entry_price + ( ( abs(stop_price - entry_price) * self.RR ) * buy_sell_converter )
+This should take the stop loss and not the stop price (incorporating the ATR)
+To do this, i have to change the stop loss before in the code 
+
+22 Action space for RR 
+So far I just tried to manually add a RR. I should add it within the action space as a parameter to be chosen 
+
+23 Performance evaluation 
+- consider adding a learning rate to the numerical metrics
+
+24 Try 
+Try to train the model on more observation as the performance now is poor. 
